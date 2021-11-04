@@ -5,3 +5,19 @@ export class UserGetAllResponse{
   @ApiProperty({type:[User]})
   data: User[]
 }
+export class UserPostOneResponse{
+  @ApiProperty()
+  status:boolean
+  @ApiProperty({type:User})
+  data: User
+}
+export class UserPutOneResponse{
+  @ApiProperty()
+  status:boolean
+  @ApiProperty({type:User})
+  data: User
+}
+export class UserDeleteOneResponse{
+  @ApiProperty()
+  status:boolean
+}
