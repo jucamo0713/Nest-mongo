@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../services/user/user.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   UserDeleteOneResponse,
@@ -9,12 +9,13 @@ import {
 } from '../../interfaces/user.controllerResponse';
 import { UserPostDto, UserPutDto } from '../../dto/user.dto';
 import { User } from '../../schemas/user/user.schema';
+import { TasksService } from '../../services/tasks/tasks.service';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
 
-  constructor(private UserService: UserService) {
+  constructor(private UserService: UserService, private tasksService: TasksService) {
   }
 
   @Get()
@@ -42,13 +43,12 @@ export class UserController {
   })
   async PostOneUser(@Body() user: UserPostDto): Promise<UserPostOneResponse> {
     const response: UserPostOneResponse = new UserPostOneResponse();
-    try {
-      response.data = await this.UserService.postOneUser(user);
-      response.status = true;
-    } catch (e) {
-      response.data = e;
+    response.status = true;
+    response.data = await this.UserService.postOneUser(user).catch(e => {
       response.status = false;
-    }
+      console.log(e);
+      return e;
+    });
     return response;
   }
 
@@ -70,16 +70,11 @@ export class UserController {
 
   @Delete(':id')
   @ApiResponse({
-    type: UserDeleteOneResponse,
+    type: Boolean,
   })
-  async DeleteOneUser(@Param('id') id: string): Promise<UserDeleteOneResponse> {
+  async DeleteOneUser(@Param('id') id: string): Promise<boolean> {
     const response: UserDeleteOneResponse = new UserDeleteOneResponse();
-    await this.UserService.DeleteOneUser(id).then(() => {
-      response.status = true;
-    }).catch(() => {
-      response.status = false;
-    });
-    response.status = true;
-    return response;
+    this.tasksService.deleteByUser(id);
+    return this.UserService.DeleteOneUser(id);
   }
 }
