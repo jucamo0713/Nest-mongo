@@ -18,3 +18,16 @@ export class TaskPostDto {
   @IsNotEmpty()
   user: string;
 }
+export class TaskPutDto {
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  name: string;
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  description: string;
+  @ApiProperty()
+  @IsOptional()
+  due_date: Date;
+}

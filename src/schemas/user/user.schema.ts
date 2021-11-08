@@ -9,11 +9,8 @@ export type UserDocument = User & Document;
 export class User{
   @Prop()
   @ApiProperty()
-  _id: string;
-  @Prop()
-  @ApiProperty()
   name: string
-  @Prop()
+  @Prop({index: {unique: true, dropDups: true}})
   @ApiProperty()
   email: string
   @Prop()

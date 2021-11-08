@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { UserService } from '../../services/user/user.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
+  BasicUserResponse,
   UserDeleteOneResponse,
   UserGetAllResponse,
   UserPostOneResponse,
@@ -10,31 +11,30 @@ import {
 import { UserPostDto, UserPutDto } from '../../dto/user.dto';
 import { User } from '../../schemas/user/user.schema';
 import { TasksService } from '../../services/tasks/tasks.service';
+import * as Process from 'process';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
 
-  constructor(private UserService: UserService, private tasksService: TasksService) {
+  constructor(private UserService: UserService, private TasksService: TasksService) {
   }
 
   @Get()
   @ApiResponse({
     type: UserGetAllResponse,
   })
+
   async getAllUser(): Promise<UserGetAllResponse> {
-    const response: UserGetAllResponse = new UserGetAllResponse();
-    response.data = await this.UserService.getAllUsers();
-    return response;
+    return this.UserService.getAllUsers();
   }
 
   @Get(':id')
   @ApiResponse({
-    type: User,
+    type: BasicUserResponse,
   })
-  async getOneUser(@Param('id') id: string): Promise<User> {
-    const response = await this.UserService.getOneUser(id);
-    return response;
+  async getOneUser(@Param('id') id: string): Promise<BasicUserResponse> {
+    return this.UserService.getOneUser(id);
   }
 
   @Post()
@@ -42,14 +42,7 @@ export class UserController {
     type: UserPostOneResponse,
   })
   async PostOneUser(@Body() user: UserPostDto): Promise<UserPostOneResponse> {
-    const response: UserPostOneResponse = new UserPostOneResponse();
-    response.status = true;
-    response.data = await this.UserService.postOneUser(user).catch(e => {
-      response.status = false;
-      console.log(e);
-      return e;
-    });
-    return response;
+    return this.UserService.postOneUser(user);
   }
 
   @Put(':id')
@@ -57,24 +50,20 @@ export class UserController {
     type: UserPutOneResponse,
   })
   async PutOneUser(@Body() user: UserPutDto, @Param('id') id: string): Promise<UserPutOneResponse> {
-    const response: UserPutOneResponse = new UserPutOneResponse();
-    try {
-      response.data = await this.UserService.putOneUser(id, user);
-      response.status = true;
-    } catch (e) {
-      response.data = e;
-      response.status = false;
-    }
-    return response;
+    return this.UserService.putOneUser(id, user);
   }
 
   @Delete(':id')
   @ApiResponse({
-    type: Boolean,
+    type: UserDeleteOneResponse,
   })
-  async DeleteOneUser(@Param('id') id: string): Promise<boolean> {
-    const response: UserDeleteOneResponse = new UserDeleteOneResponse();
-    this.tasksService.deleteByUser(id);
-    return this.UserService.DeleteOneUser(id);
+  async DeleteOneUser(@Param('id') id: string): Promise<UserDeleteOneResponse> {
+    const response: UserDeleteOneResponse = await this.UserService.DeleteOneUser(id);
+    if (response.status) {
+      this.TasksService.deleteByUser(id).then(() => {
+        console.log('Ended Process');
+      });
+    }
+    return response;
   }
 }

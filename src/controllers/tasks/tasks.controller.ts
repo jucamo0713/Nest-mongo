@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TasksService } from '../../services/tasks/tasks.service';
 import {
+  BasicTaskResponse,
   TaskGetAllResponse,
   TaskGetByUserResponse,
-  TaskGetOneResponse,
-  TaskPostOneResponse,
+  TaskPostOneResponse, TaskPutOneResponse,
 } from '../../interfaces/task.controllerResponse';
 import { TaskPostDto } from '../../dto/task.dto';
 
@@ -20,23 +20,15 @@ export class TasksController {
     type: TaskGetAllResponse,
   })
   async getAllUser(): Promise<TaskGetAllResponse> {
-    const response: TaskGetAllResponse = new TaskGetAllResponse();
-    response.data = await this.taskService.GetAllTasks();
-    return response;
+    return this.taskService.GetAllTasks();
   }
 
   @Get(':id')
   @ApiResponse({
-    type: TaskGetOneResponse,
+    type: BasicTaskResponse,
   })
-  async getOneTaks(@Param('id') id: string): Promise<TaskGetOneResponse> {
-    const response: TaskGetOneResponse = new TaskGetOneResponse();
-    response.status = true;
-    response.data = await this.taskService.GetOneTasks(id).catch(e => {
-      response.status = false;
-      return e;
-    });
-    return response;
+  async getOneTasks(@Param('id') id: string): Promise<BasicTaskResponse> {
+    return this.taskService.GetOneTasks(id);
   }
 
   @Get('/byUser/:id')
@@ -44,9 +36,7 @@ export class TasksController {
     type: TaskGetByUserResponse,
   })
   async getTaskByUser(@Param('id') id: string): Promise<TaskGetByUserResponse> {
-    const response: TaskGetByUserResponse = new TaskGetByUserResponse();
-    response.data = await this.taskService.GetTasksByUser(id);
-    return response;
+    return this.taskService.GetTasksByUser(id);
   }
 
   @Post()
@@ -54,12 +44,22 @@ export class TasksController {
     type: TaskPostOneResponse,
   })
   async PostOneTask(@Body() task: TaskPostDto): Promise<TaskPostOneResponse> {
-    const response: TaskPostOneResponse = new TaskPostOneResponse();
-    response.status = true;
-    response.data = await this.taskService.postOneTask(task).catch(e => {
-      response.status = false;
-      return e;
-    });
-    return response;
+    return this.taskService.postOneTask(task);
+  }
+
+  @Put(':id')
+  @ApiResponse({
+    type: TaskPutOneResponse,
+  })
+  async PutOneTask(@Param("id") id:string, @Body() task: TaskPostDto): Promise<TaskPutOneResponse> {
+    return this.taskService.putOneTask(id, task);
+  }
+
+  @Delete(":id")
+  @ApiResponse({
+    type: TaskPostOneResponse,
+  })
+  async DeleteOneTask(@Param("id") id:string,): Promise<TaskPostOneResponse> {
+    return this.taskService.deleteOneTask(id);
   }
 }
