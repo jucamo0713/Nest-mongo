@@ -14,6 +14,12 @@ export class UserGetAllResponse{
   @ApiProperty({type:[BasicUserResponse]})
   data: BasicUserResponse[]
 }
+export class UserActualResponse{
+  @ApiProperty()
+  status:boolean
+  @ApiProperty()
+  data: string
+}
 export class UserPostOneResponse{
   @ApiProperty()
   status:boolean

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
@@ -7,11 +7,12 @@ import {
   UserGetAllResponse,
   UserPostOneResponse,
   UserPutOneResponse,
+  UserActualResponse,
 } from '../../interfaces/user.controllerResponse';
 import { UserPostDto, UserPutDto } from '../../dto/user.dto';
 import { User } from '../../schemas/user/user.schema';
 import { TasksService } from '../../services/tasks/tasks.service';
-import * as Process from 'process';
+import { JwtAuthGuard } from '../../services/security/auth/guards/jwtAuth.guard';
 
 @ApiTags('User')
 @Controller('user')
@@ -20,15 +21,16 @@ export class UserController {
   constructor(private UserService: UserService, private TasksService: TasksService) {
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiResponse({
     type: UserGetAllResponse,
   })
-
   async getAllUser(): Promise<UserGetAllResponse> {
     return this.UserService.getAllUsers();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiResponse({
     type: BasicUserResponse,
@@ -37,6 +39,7 @@ export class UserController {
     return this.UserService.getOneUser(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiResponse({
     type: UserPostOneResponse,
@@ -45,6 +48,7 @@ export class UserController {
     return this.UserService.postOneUser(user);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   @ApiResponse({
     type: UserPutOneResponse,
@@ -53,6 +57,33 @@ export class UserController {
     return this.UserService.putOneUser(id, user);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/actual')
+  @ApiResponse({
+    type: BasicUserResponse,
+  })
+  async getActualUser(@Request() req): Promise<BasicUserResponse> {
+    return req.user;
+  }
+
+  @Post('/actual')
+  @ApiResponse({
+    type: UserActualResponse,
+  })
+  async PostActualUser(@Body() user: UserPostDto, @Request() req): Promise<UserActualResponse> {
+    return this.UserService.postActualUser(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/actual')
+  @ApiResponse({
+    type: UserActualResponse,
+  })
+  async PutActualUser(@Body() user: UserPutDto, @Request() req): Promise<UserActualResponse> {
+    return this.UserService.putActualUser(req.user._id, user);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @ApiResponse({
     type: UserDeleteOneResponse,

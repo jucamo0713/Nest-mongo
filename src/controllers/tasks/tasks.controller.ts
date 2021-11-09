@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TasksService } from '../../services/tasks/tasks.service';
 import {
@@ -8,6 +8,7 @@ import {
   TaskPostOneResponse, TaskPutOneResponse,
 } from '../../interfaces/task.controllerResponse';
 import { TaskPostDto } from '../../dto/task.dto';
+import { JwtAuthGuard } from '../../services/security/auth/guards/jwtAuth.guard';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -15,14 +16,16 @@ export class TasksController {
   constructor(private taskService: TasksService) {
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiResponse({
     type: TaskGetAllResponse,
   })
-  async getAllUser(): Promise<TaskGetAllResponse> {
+  async getAllTasks(): Promise<TaskGetAllResponse> {
     return this.taskService.GetAllTasks();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiResponse({
     type: BasicTaskResponse,
@@ -31,6 +34,7 @@ export class TasksController {
     return this.taskService.GetOneTasks(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/byUser/:id')
   @ApiResponse({
     type: TaskGetByUserResponse,
@@ -39,6 +43,7 @@ export class TasksController {
     return this.taskService.GetTasksByUser(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiResponse({
     type: TaskPostOneResponse,
@@ -47,19 +52,21 @@ export class TasksController {
     return this.taskService.postOneTask(task);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   @ApiResponse({
     type: TaskPutOneResponse,
   })
-  async PutOneTask(@Param("id") id:string, @Body() task: TaskPostDto): Promise<TaskPutOneResponse> {
+  async PutOneTask(@Param('id') id: string, @Body() task: TaskPostDto): Promise<TaskPutOneResponse> {
     return this.taskService.putOneTask(id, task);
   }
 
-  @Delete(":id")
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
   @ApiResponse({
     type: TaskPostOneResponse,
   })
-  async DeleteOneTask(@Param("id") id:string,): Promise<TaskPostOneResponse> {
+  async DeleteOneTask(@Param('id') id: string): Promise<TaskPostOneResponse> {
     return this.taskService.deleteOneTask(id);
   }
 }

@@ -102,9 +102,6 @@ export class TasksService {
   }
 
   async deleteByUser(id): Promise<void> {
-    let x: Task;
-    do {
-      x = await this.taskModel.findOneAndDelete({ user: id });
-    } while (!!x);
+    await this.taskModel.deleteMany({ user: id });
   }
 }
