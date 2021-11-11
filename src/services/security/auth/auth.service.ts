@@ -37,15 +37,12 @@ export class AuthService {
   async login(user: BasicUserResponse): Promise<UserActualResponse> {
     const response: UserActualResponse = new UserActualResponse();
     try {
-      console.log(user)
       response.status = true;
       response.data = this.jwtService.sign(user);
     } catch (e) {
-      console.log(e);
       response.status = false;
-      response.data = { ...e };
+      response.data = e;
     }
-    console.log(response);
     return response;
   }
 }

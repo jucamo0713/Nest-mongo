@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   BasicUserResponse,
   UserDeleteOneResponse,
@@ -16,6 +16,7 @@ import { JwtAuthGuard } from '../../services/security/auth/guards/jwtAuth.guard'
 
 @ApiTags('User')
 @Controller('user')
+@ApiBearerAuth()
 export class UserController {
 
   constructor(private UserService: UserService, private TasksService: TasksService) {

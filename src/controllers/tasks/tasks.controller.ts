@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TasksService } from '../../services/tasks/tasks.service';
 import {
   BasicTaskResponse,
@@ -12,6 +12,7 @@ import { JwtAuthGuard } from '../../services/security/auth/guards/jwtAuth.guard'
 
 @ApiTags('tasks')
 @Controller('tasks')
+@ApiBearerAuth()
 export class TasksController {
   constructor(private taskService: TasksService) {
   }
