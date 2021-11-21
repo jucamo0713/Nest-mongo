@@ -13,29 +13,29 @@ export class BasicTaskResponse {
   @ApiProperty()
   user: BasicUserResponse;
 }
-export class TaskPostOneResponse{
+export class TaskPostOneResponse {
   @ApiProperty()
-  status:boolean
-  @ApiProperty({type:BasicTaskResponse})
-  data: BasicTaskResponse
+  status: boolean;
+  @ApiProperty({ type: BasicTaskResponse })
+  data: BasicTaskResponse;
 }
-export class TaskGetAllResponse{
-  @ApiProperty({type:[BasicTaskResponse]})
-  data: BasicTaskResponse[]
+export class TaskGetAllResponse {
+  @ApiProperty({ type: [BasicTaskResponse] })
+  data: BasicTaskResponse[];
 }
-export class TaskGetByUserResponse{
-  @ApiProperty({type:[BasicTaskResponse]})
-  data: BasicTaskResponse[]
+export class TaskGetByUserResponse {
+  @ApiProperty({ type: [BasicTaskResponse] })
+  data: BasicTaskResponse[];
 }
-export class TaskPutOneResponse{
+export class TaskPutOneResponse {
   @ApiProperty()
-  status:boolean
-  @ApiProperty({type:BasicTaskResponse})
-  data: BasicTaskResponse
+  status: boolean;
+  @ApiProperty({ type: BasicTaskResponse })
+  data: BasicTaskResponse;
 }
-export class TaskDeleteOneResponse{
+export class TaskDeleteOneResponse {
   @ApiProperty()
-  status:boolean
-  @ApiProperty({type:BasicTaskResponse})
-  data: BasicTaskResponse
+  status: boolean;
+  @ApiProperty({ type: BasicTaskResponse })
+  data: BasicTaskResponse;
 }

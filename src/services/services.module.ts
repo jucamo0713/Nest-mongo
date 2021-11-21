@@ -12,16 +12,32 @@ import { JwtStrategy } from './security/auth/strategies/jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-  }), SchemasModule, PassportModule, JwtModule.register({
-    secret: process.env.JWT_PASSWORD,
-    signOptions: { expiresIn: '2 Days' },
-
-  })],
-  providers: [HashingService, EncryptingService, AuthService, UserService, TasksService, LocalStrategy, JwtStrategy],
-  exports: [HashingService, EncryptingService, AuthService, UserService, TasksService, LocalStrategy, JwtStrategy],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    SchemasModule,
+    PassportModule,
+    JwtModule.register({
+      secret: process.env.JWT_PASSWORD,
+      signOptions: { expiresIn: '2 Days' },
+    }),
+  ],
+  providers: [
+    HashingService,
+    EncryptingService,
+    AuthService,
+    UserService,
+    TasksService,
+    LocalStrategy,
+    JwtStrategy,
+  ],
+  exports: [
+    HashingService,
+    EncryptingService,
+    AuthService,
+    UserService,
+    TasksService,
+  ],
 })
-
-export class ServicesModule {
-}
+export class ServicesModule {}

@@ -1,11 +1,21 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TasksService } from '../../services/tasks/tasks.service';
 import {
   BasicTaskResponse,
   TaskGetAllResponse,
   TaskGetByUserResponse,
-  TaskPostOneResponse, TaskPutOneResponse,
+  TaskPostOneResponse,
+  TaskPutOneResponse,
 } from '../../interfaces/task.controllerResponse';
 import { TaskPostDto } from '../../dto/task.dto';
 import { JwtAuthGuard } from '../../services/security/auth/guards/jwtAuth.guard';
@@ -14,8 +24,7 @@ import { JwtAuthGuard } from '../../services/security/auth/guards/jwtAuth.guard'
 @Controller('tasks')
 @ApiBearerAuth()
 export class TasksController {
-  constructor(private taskService: TasksService) {
-  }
+  constructor(private taskService: TasksService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -58,7 +67,10 @@ export class TasksController {
   @ApiResponse({
     type: TaskPutOneResponse,
   })
-  async PutOneTask(@Param('id') id: string, @Body() task: TaskPostDto): Promise<TaskPutOneResponse> {
+  async PutOneTask(
+    @Param('id') id: string,
+    @Body() task: TaskPostDto,
+  ): Promise<TaskPutOneResponse> {
     return this.taskService.putOneTask(id, task);
   }
 

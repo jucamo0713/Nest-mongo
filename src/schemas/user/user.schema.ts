@@ -1,19 +1,19 @@
-import {Schema ,Prop, SchemaFactory} from "@nestjs/mongoose";
-import { Document} from 'mongoose';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 
 export type UserDocument = User & Document;
 
 @Schema()
-export class User{
+export class User {
   @Prop()
   @ApiProperty()
-  name: string
-  @Prop({index: {unique: true, dropDups: true}})
+  name: string;
+  @Prop({ index: { unique: true, dropDups: true } })
   @ApiProperty()
-  email: string
+  email: string;
   @Prop()
   @ApiProperty()
-  password: string
+  password: string;
 }
 export const UserSchema = SchemaFactory.createForClass(User);

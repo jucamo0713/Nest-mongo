@@ -5,28 +5,28 @@ export class UserPostDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  name:string;
+  name: string;
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @IsEmail()
-  email:string;
+  email: string;
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  password:string;
+  password: string;
 }
 export class UserPutDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  name:string;
+  name: string;
   @ApiProperty()
   @IsString()
   @IsOptional()
-  email:string;
+  email: string;
   @ApiProperty()
   @IsString()
   @IsOptional()
-  password:string;
+  password: string;
 }

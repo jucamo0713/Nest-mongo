@@ -12,12 +12,15 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private hashingService: HashingService,
+    private jwtService: JwtService,
+  ) {}
 
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>,
-              private hashingService: HashingService, private jwtService: JwtService) {
-  }
-
-  private async parseUserResponse(User: UserDocument): Promise<BasicUserResponse> {
+  private async parseUserResponse(
+    User: UserDocument,
+  ): Promise<BasicUserResponse> {
     return {
       _id: User._id,
       name: User.name,
@@ -26,8 +29,13 @@ export class AuthService {
   }
 
   async validateUser(User: LoginDto): Promise<BasicUserResponse> {
-    const user: UserDocument = (await this.userModel.find({ email: User.email }))[0];
-    if ((!!user) && (await this.hashingService.compareHash(User.password, user.password))) {
+    const user: UserDocument = (
+      await this.userModel.find({ email: User.email })
+    )[0];
+    if (
+      !!user &&
+      (await this.hashingService.compareHash(User.password, user.password))
+    ) {
       const result = this.parseUserResponse(user);
       return result;
     }

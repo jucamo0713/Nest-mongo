@@ -1,40 +1,38 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { User } from "../schemas/user/user.schema";
-import { Prop } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class BasicUserResponse{
+export class BasicUserResponse {
   @ApiProperty()
   _id: string;
   @ApiProperty()
-  name: string
+  name: string;
   @ApiProperty()
-  email: string
+  email: string;
 }
-export class UserGetAllResponse{
-  @ApiProperty({type:[BasicUserResponse]})
-  data: BasicUserResponse[]
+export class UserGetAllResponse {
+  @ApiProperty({ type: [BasicUserResponse] })
+  data: BasicUserResponse[];
 }
-export class UserActualResponse{
+export class UserActualResponse {
   @ApiProperty()
-  status:boolean
+  status: boolean;
   @ApiProperty()
-  data: string
+  data: string;
 }
-export class UserPostOneResponse{
+export class UserPostOneResponse {
   @ApiProperty()
-  status:boolean
-  @ApiProperty({type:BasicUserResponse})
-  data: BasicUserResponse
+  status: boolean;
+  @ApiProperty({ type: BasicUserResponse })
+  data: BasicUserResponse;
 }
-export class UserPutOneResponse{
+export class UserPutOneResponse {
   @ApiProperty()
-  status:boolean
-  @ApiProperty({type:BasicUserResponse})
-  data: BasicUserResponse
+  status: boolean;
+  @ApiProperty({ type: BasicUserResponse })
+  data: BasicUserResponse;
 }
-export class UserDeleteOneResponse{
+export class UserDeleteOneResponse {
   @ApiProperty()
-  status:boolean
+  status: boolean;
   @ApiProperty()
-  data:BasicUserResponse
+  data: BasicUserResponse;
 }

@@ -1,5 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
-import { UserService } from '../../services/user/user.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   BasicUserResponse,
@@ -10,7 +19,11 @@ import {
   UserActualResponse,
 } from '../../interfaces/user.controllerResponse';
 import { UserPostDto, UserPutDto } from '../../dto/user.dto';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { User } from '../../schemas/user/user.schema';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { UserService } from '../../services/user/user.service';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { TasksService } from '../../services/tasks/tasks.service';
 import { JwtAuthGuard } from '../../services/security/auth/guards/jwtAuth.guard';
 
@@ -18,9 +31,10 @@ import { JwtAuthGuard } from '../../services/security/auth/guards/jwtAuth.guard'
 @Controller('user')
 @ApiBearerAuth()
 export class UserController {
-
-  constructor(private UserService: UserService, private TasksService: TasksService) {
-  }
+  constructor(
+    private UserService: UserService,
+    private TasksService: TasksService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -31,6 +45,34 @@ export class UserController {
     return this.UserService.getAllUsers();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/actual')
+  @ApiResponse({
+    type: BasicUserResponse,
+  })
+  async getActualUser(@Request() req): Promise<BasicUserResponse> {
+    return req.user;
+  }
+
+  @Post('/actual')
+  @ApiResponse({
+    type: UserActualResponse,
+  })
+  async PostActualUser(@Body() user: UserPostDto): Promise<UserActualResponse> {
+    return this.UserService.postActualUser(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/actual')
+  @ApiResponse({
+    type: UserActualResponse,
+  })
+  async PutActualUser(
+    @Body() user: UserPutDto,
+    @Request() req,
+  ): Promise<UserActualResponse> {
+    return this.UserService.putActualUser(req.user._id, user);
+  }
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiResponse({
@@ -54,34 +96,11 @@ export class UserController {
   @ApiResponse({
     type: UserPutOneResponse,
   })
-  async PutOneUser(@Body() user: UserPutDto, @Param('id') id: string): Promise<UserPutOneResponse> {
+  async PutOneUser(
+    @Body() user: UserPutDto,
+    @Param('id') id: string,
+  ): Promise<UserPutOneResponse> {
     return this.UserService.putOneUser(id, user);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('/actual')
-  @ApiResponse({
-    type: BasicUserResponse,
-  })
-  async getActualUser(@Request() req): Promise<BasicUserResponse> {
-    return req.user;
-  }
-
-  @Post('/actual')
-  @ApiResponse({
-    type: UserActualResponse,
-  })
-  async PostActualUser(@Body() user: UserPostDto, @Request() req): Promise<UserActualResponse> {
-    return this.UserService.postActualUser(user);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Put('/actual')
-  @ApiResponse({
-    type: UserActualResponse,
-  })
-  async PutActualUser(@Body() user: UserPutDto, @Request() req): Promise<UserActualResponse> {
-    return this.UserService.putActualUser(req.user._id, user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -90,7 +109,8 @@ export class UserController {
     type: UserDeleteOneResponse,
   })
   async DeleteOneUser(@Param('id') id: string): Promise<UserDeleteOneResponse> {
-    const response: UserDeleteOneResponse = await this.UserService.DeleteOneUser(id);
+    const response: UserDeleteOneResponse =
+      await this.UserService.DeleteOneUser(id);
     if (response.status) {
       this.TasksService.deleteByUser(id).then(() => {
         console.log('Ended Process');

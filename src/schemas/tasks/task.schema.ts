@@ -2,7 +2,7 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import * as mongoose from 'mongoose';
-import { User, UserDocument } from '../user/user.schema';
+import { UserDocument } from '../user/user.schema';
 
 export type TaskDocument = Task & Document;
 
